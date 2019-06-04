@@ -1,7 +1,7 @@
-# Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
+﻿# Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Надежда Михайлова](https://up.htmlacademy.ru/javascript/17/user/915421).
-* Наставник: `Неизвестно`.
+* Наставник: [Илья Евсеев](https://htmlacademy.ru/profile/id494767).
 
 ---
 
