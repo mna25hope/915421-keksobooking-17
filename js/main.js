@@ -10,20 +10,18 @@ var PIN_MAX_Y = 630;
 var userMap = document.querySelector(".map");
 userMap.classList.remove("map--faded");
 
-var mapPinTemplate = document
-  .querySelector("#pin")
-  .content.querySelector(".map__pin");
+var mapPinTemplate = document.querySelector("#pin").content.querySelector(".map__pin");
 
 var getAvatarImages = function() {
   return [
-    "img/avatars/user/01.png",
-    "img/avatars/user/02.png",
-    "img/avatars/user/03.png",
-    "img/avatars/user/04.png",
-    "img/avatars/user/05.png",
-    "img/avatars/user/06.png",
-    "img/avatars/user/07.png",
-    "img/avatars/user/08.png"
+    "img/avatars/user01.png",
+    "img/avatars/user02.png",
+    "img/avatars/user03.png",
+    "img/avatars/user04.png",
+    "img/avatars/user05.png",
+    "img/avatars/user06.png",
+    "img/avatars/user07.png",
+    "img/avatars/user08.png"
   ];
 };
 
@@ -74,14 +72,12 @@ var getRandomPins = function(count) {
 
 // Создает и возвращает элемент метки на основе входных данных
 var createMapPinNode = function(data) {
-  var pinTemplate = document
-    .querySelector("#pin")
-    .content.querySelector(".map__pin");
+  var pinTemplate = document.querySelector("#pin").content.querySelector(".map__pin");
   var pinElement = pinTemplate.cloneNode(true);
   var pinElementCover = pinElement.querySelector("img");
 
-  pinElement.style.left = data.location.x;
-  pinElement.style.top = data.location.y;
+  pinElement.style.left = data.location.x + "px";
+  pinElement.style.top = data.location.y + "px";
   pinElementCover.src = data.author.avatar;
   pinElementCover.alt = data.author.announcementTitle;
 
@@ -90,7 +86,7 @@ var createMapPinNode = function(data) {
 
 // Генерирует и добавляет метки на карту
 var generateAndAppendMapPins = function() {
-  var pins = getRandomPins();
+  var pins = getRandomPins(OBJECT_COUNT);
   var fragment = document.createDocumentFragment();
   var mapPins = document.querySelector(".map__pins");
 
