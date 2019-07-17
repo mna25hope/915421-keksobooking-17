@@ -9,11 +9,22 @@ var PIN_MAX_Y = 630;
 
 var DEC_RADIX = 10;
 
+var MinPrices = {
+  bungalo: 0,
+  flat: 1000,
+  house: 5000,
+  palace: 10000
+};
+
 var mapElement = document.querySelector('.map');
 var mainPinElement = mapElement.querySelector('.map__pin--main');
 
 var formElement = document.querySelector('.ad-form');
 var addressInputElement = formElement.querySelector('input[name=address]');
+var typeSelectElement = formElement.querySelector('select[name=type]');
+var priceInputElement = formElement.querySelector('input[name=price]');
+var timeinSelectElement = formElement.querySelector('select[name=timein]');
+var timeoutSelectElement = formElement.querySelector('select[name=timeout]');
 
 var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
@@ -103,6 +114,16 @@ var generateAndAppendMapPins = function () {
   mapPins.appendChild(fragment);
 };
 
+var setSelectValue = function (select, value) {
+  var selectOptions = select.options;
+
+  for (var i = 0; i < selectOptions.length; i++) {
+    if (selectOptions[i].value === value) {
+      selectOptions[i].selected = true;
+    }
+  }
+};
+
 var updateMainPinAddress = function () {
   var x = parseInt(mainPinElement.style.left, DEC_RADIX);
   var y = parseInt(mainPinElement.style.top, DEC_RADIX);
@@ -117,6 +138,27 @@ var mainPinClickHandler = function () {
   generateAndAppendMapPins();
 };
 
+var typeSelectChangeHandler = function (evt) {
+  var value = evt.target.value;
+  var min = MinPrices[value];
+
+  priceInputElement.min = min;
+  priceInputElement.placeholder = min;
+};
+
+var timeinSelectChangeHangler = function (evt) {
+  var value = evt.target.value;
+  setSelectValue(timeoutSelectElement, value);
+};
+
+var timeoutSelectChangeHanler = function (evt) {
+  var value = evt.target.value;
+  setSelectValue(timeinSelectElement, value);
+};
+
 mainPinElement.addEventListener('mouseup', mainPinClickHandler);
+typeSelectElement.addEventListener('change', typeSelectChangeHandler);
+timeinSelectElement.addEventListener('change', timeinSelectChangeHangler);
+timeoutSelectElement.addEventListener('change', timeoutSelectChangeHanler);
 
 updateMainPinAddress();
