@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 
 var OBJECT_COUNT = 8;
-var TYPE = ['palace', 'flat', 'house', 'bungalo'];
+var TYPE = ["palace", "flat", "house", "bungalo"];
 
 var PIN_WIDTH = 40;
 var PIN_MIN_Y = 130;
@@ -16,37 +16,41 @@ var MinPrices = {
   palace: 10000
 };
 
-var mapElement = document.querySelector('.map');
-var mainPinElement = mapElement.querySelector('.map__pin--main');
+var isMapActivated = false;
 
-var formElement = document.querySelector('.ad-form');
-var addressInputElement = formElement.querySelector('input[name=address]');
-var typeSelectElement = formElement.querySelector('select[name=type]');
-var priceInputElement = formElement.querySelector('input[name=price]');
-var timeinSelectElement = formElement.querySelector('select[name=timein]');
-var timeoutSelectElement = formElement.querySelector('select[name=timeout]');
+var mapElement = document.querySelector(".map");
+var mainPinElement = mapElement.querySelector(".map__pin--main");
 
-var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+var formElement = document.querySelector(".ad-form");
+var addressInputElement = formElement.querySelector("input[name=address]");
+var typeSelectElement = formElement.querySelector("select[name=type]");
+var priceInputElement = formElement.querySelector("input[name=price]");
+var timeinSelectElement = formElement.querySelector("select[name=timein]");
+var timeoutSelectElement = formElement.querySelector("select[name=timeout]");
 
-var getAvatarImages = function () {
+var mapPinTemplate = document
+  .querySelector("#pin")
+  .content.querySelector(".map__pin");
+
+var getAvatarImages = function() {
   return [
-    'img/avatars/user01.png',
-    'img/avatars/user02.png',
-    'img/avatars/user03.png',
-    'img/avatars/user04.png',
-    'img/avatars/user05.png',
-    'img/avatars/user06.png',
-    'img/avatars/user07.png',
-    'img/avatars/user08.png'
+    "img/avatars/user01.png",
+    "img/avatars/user02.png",
+    "img/avatars/user03.png",
+    "img/avatars/user04.png",
+    "img/avatars/user05.png",
+    "img/avatars/user06.png",
+    "img/avatars/user07.png",
+    "img/avatars/user08.png"
   ];
 };
 
-var getHouseTypes = function () {
-  return ['palace', 'flat', 'house', 'bungalo'];
+var getHouseTypes = function() {
+  return ["palace", "flat", "house", "bungalo"];
 };
 
 // функция случайных чисел
-var getRandomNumber = function (min, max) {
+var getRandomNumber = function(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -54,17 +58,17 @@ var getRandomNumber = function (min, max) {
 
 // Возвращает случайную координату X метки
 
-var getRandomPinX = function () {
+var getRandomPinX = function() {
   var mapWidth = mapElement.clientWidth;
   return getRandomNumber(PIN_WIDTH, mapWidth - PIN_WIDTH);
 };
 
 // Возвращает случайную координату Y метки
-var getRandomPinY = function () {
+var getRandomPinY = function() {
   return getRandomNumber(PIN_MIN_Y, PIN_MAX_Y);
 };
 
-var getRandomPins = function (count) {
+var getRandomPins = function(count) {
   var pins = [];
   var avatars = getAvatarImages();
   var houseTypes = getHouseTypes();
@@ -87,13 +91,15 @@ var getRandomPins = function (count) {
 };
 
 // Создает и возвращает элемент метки на основе входных данных
-var createMapPinNode = function (data) {
-  var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+var createMapPinNode = function(data) {
+  var pinTemplate = document
+    .querySelector("#pin")
+    .content.querySelector(".map__pin");
   var pinElement = pinTemplate.cloneNode(true);
-  var pinElementCover = pinElement.querySelector('img');
+  var pinElementCover = pinElement.querySelector("img");
 
-  pinElement.style.left = data.location.x + 'px';
-  pinElement.style.top = data.location.y + 'px';
+  pinElement.style.left = data.location.x + "px";
+  pinElement.style.top = data.location.y + "px";
   pinElementCover.src = data.author.avatar;
   pinElementCover.alt = data.author.announcementTitle;
 
@@ -101,12 +107,12 @@ var createMapPinNode = function (data) {
 };
 
 // Генерирует и добавляет метки на карту
-var generateAndAppendMapPins = function () {
+var generateAndAppendMapPins = function() {
   var pins = getRandomPins(OBJECT_COUNT);
   var fragment = document.createDocumentFragment();
-  var mapPins = document.querySelector('.map__pins');
+  var mapPins = document.querySelector(".map__pins");
 
-  pins.forEach(function (pin) {
+  pins.forEach(function(pin) {
     var pinElement = createMapPinNode(pin);
     fragment.appendChild(pinElement);
   });
@@ -114,7 +120,7 @@ var generateAndAppendMapPins = function () {
   mapPins.appendChild(fragment);
 };
 
-var setSelectValue = function (select, value) {
+var setSelectValue = function(select, value) {
   var selectOptions = select.options;
 
   for (var i = 0; i < selectOptions.length; i++) {
@@ -124,21 +130,23 @@ var setSelectValue = function (select, value) {
   }
 };
 
-var updateMainPinAddress = function () {
+var updateMainPinAddress = function() {
   var x = parseInt(mainPinElement.style.left, DEC_RADIX);
   var y = parseInt(mainPinElement.style.top, DEC_RADIX);
 
-  addressInputElement.value = x + ', ' + y;
+  addressInputElement.value = x + ", " + y;
 };
 
-var mainPinClickHandler = function () {
-  mapElement.classList.remove('map--faded');
-  formElement.classList.remove('ad-form--disabled');
+var activatePage = function() {
+  mapElement.classList.remove("map--faded");
+  formElement.classList.remove("ad-form--disabled");
 
   generateAndAppendMapPins();
+
+  isMapActivated = true;
 };
 
-var typeSelectChangeHandler = function (evt) {
+var typeSelectChangeHandler = function(evt) {
   var value = evt.target.value;
   var min = MinPrices[value];
 
@@ -146,19 +154,75 @@ var typeSelectChangeHandler = function (evt) {
   priceInputElement.placeholder = min;
 };
 
-var timeinSelectChangeHangler = function (evt) {
+var timeinSelectChangeHangler = function(evt) {
   var value = evt.target.value;
   setSelectValue(timeoutSelectElement, value);
 };
 
-var timeoutSelectChangeHanler = function (evt) {
+var timeoutSelectChangeHanler = function(evt) {
   var value = evt.target.value;
   setSelectValue(timeinSelectElement, value);
 };
 
-mainPinElement.addEventListener('mouseup', mainPinClickHandler);
-typeSelectElement.addEventListener('change', typeSelectChangeHandler);
-timeinSelectElement.addEventListener('change', timeinSelectChangeHangler);
-timeoutSelectElement.addEventListener('change', timeoutSelectChangeHanler);
+var mainPinMouseDownHandler = function(mouseDownEvent) {
+  mouseDownEvent.preventDefault();
+
+  if (!isMapActivated) {
+    activatePage();
+  }
+
+  var coords = {
+    x: mouseDownEvent.clientX,
+    y: mouseDownEvent.clientY
+  };
+
+  var mainPinMouseMoveHandler = function(mouseMoveEvent) {
+    var shift = {
+      x: coords.x - mouseMoveEvent.clientX,
+      y: coords.y - mouseMoveEvent.clientY
+    };
+
+    var nextX = mainPinElement.offsetLeft - shift.x;
+    var nextY = mainPinElement.offsetTop - shift.y;
+
+    var mapWidth = mapElement.clientWidth;
+    var pinMinX = PIN_WIDTH;
+    var pinMaxX = mapWidth - PIN_WIDTH;
+
+    if (
+      nextX < pinMinX ||
+      nextX > pinMaxX ||
+      nextY < PIN_MIN_Y ||
+      nextY > PIN_MAX_Y
+    ) {
+      return;
+    }
+
+    coords = {
+      x: mouseMoveEvent.clientX,
+      y: mouseMoveEvent.clientY
+    };
+
+    mainPinElement.style.left = mainPinElement.offsetLeft - shift.x + "px";
+    mainPinElement.style.top = mainPinElement.offsetTop - shift.y + "px";
+
+    updateMainPinAddress();
+  };
+
+  var mainPinMouseUpHandler = function() {
+    document.removeEventListener("mousemove", mainPinMouseMoveHandler);
+    document.addEventListener("mouseup", mainPinMouseUpHandler);
+  };
+
+  document.addEventListener("mousemove", mainPinMouseMoveHandler);
+  document.addEventListener("mouseup", mainPinMouseUpHandler);
+
+  // mainPinElement.addEventListener()
+};
+
+mainPinElement.addEventListener("mousedown", mainPinMouseDownHandler);
+typeSelectElement.addEventListener("change", typeSelectChangeHandler);
+timeinSelectElement.addEventListener("change", timeinSelectChangeHangler);
+timeoutSelectElement.addEventListener("change", timeoutSelectChangeHanler);
 
 updateMainPinAddress();
