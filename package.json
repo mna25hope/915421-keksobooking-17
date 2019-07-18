@@ -15,7 +15,9 @@
     "eslint-config-htmlacademy": "0.5.2"
   },
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "prettier-eslint": "^9.0.0"
+  },
   "scripts": {
     "test": "eslint js/"
   },
