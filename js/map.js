@@ -1,8 +1,6 @@
 'use strict';
 
 (function () {
-  var OBJECT_COUNT = 8;
-
   var isMapActivated = false;
 
   var mapElement = document.querySelector('.map');
@@ -11,7 +9,7 @@
   window.map = {
     setEnabled: function (enabled) {
       if (enabled) {
-        generateAndAppendMapPins();
+        loadPins();
         mapElement.classList.remove('map--faded');
       } else {
         mapElement.classList.add('map--faded');
@@ -21,11 +19,22 @@
     }
   };
 
+  var loadPins = function () {
+    var onSuccess = function (pins) {
+      addMapPins(pins);
+    };
+
+    var onError = function () {
+      window.xhr.showErrorMessage('Не удалось загрузить объявления', loadPins);
+    };
+
+    window.pin.loadPins(onSuccess, onError);
+  };
+
   // Генерирует и добавляет метки на карту
-  var generateAndAppendMapPins = function () {
-    var pins = window.pin.getRandomPins(OBJECT_COUNT);
-    var fragment = document.createDocumentFragment();
+  var addMapPins = function (pins) {
     var mapPins = document.querySelector('.map__pins');
+    var fragment = document.createDocumentFragment();
 
     pins.forEach(function (pin) {
       var pinElement = window.pin.createMapPinNode(pin);
