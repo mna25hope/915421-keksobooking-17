@@ -2,7 +2,9 @@
 
 (function() {
   var mapFilterElement = document.querySelector(".map__filters");
-  var housingTypeFilterElement = mapFilterElement.querySelector("select[name=housing-type]");
+  var housingTypeFilterElement = mapFilterElement.querySelector(
+    "select[name=housing-type]"
+  );
 
   var housingTypeChangeHandler = function(evt) {
     var filters = window.map.getFilters();
@@ -13,3 +15,4 @@
 
   housingTypeFilterElement.addEventListener("change", housingTypeChangeHandler);
 })();
+//
