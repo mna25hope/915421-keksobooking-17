@@ -8,7 +8,10 @@
   var mainPinElement = mapElement.querySelector(".map__pin--main");
 
   var filters = {
-    housingType: "any"
+    housingType: "any",
+    housingPrice: "any",
+    housingRooms: "any",
+    housingGuests: "any"
   };
 
   var _pins = [];
@@ -32,8 +35,38 @@
 
       // Фильтр по типу жилья
       if (filters.housingType !== "any") {
-        filteredPins = _pins.filter(function(pin) {
+        filteredPins = filteredPins.filter(function(pin) {
           return pin.offer.type === filters.housingType;
+        });
+      }
+
+      // Фильтр по цене жилья
+      if (filters.housingPrice !== "any") {
+        filteredPins = filteredPins.filter(function(pin) {
+          var price = pin.offer.price;
+
+          switch (filters.housingPrice) {
+            case "middle":
+              return price >= 10000 && price <= 50000;
+            case "low":
+              return price < 10000;
+            case "high":
+              return price > 50000;
+          }
+        });
+      }
+
+      // Фильтр по количеству комнат
+      if (filters.housingRooms !== "any") {
+        filteredPins = filteredPins.filter(function(pin) {
+          return pin.offer.rooms === filters.housingRooms;
+        });
+      }
+
+      // Фильтр по количеству гостей
+      if (filters.housingGuests !== "any") {
+        filteredPins = filteredPins.filter(function(pin) {
+          return pin.offer.guests === filters.housingGuests;
         });
       }
 
