@@ -1,69 +1,71 @@
-"use strict";
+'use strict';
 
-(function() {
+(function () {
   var isMapActivated = false;
 
-  var mapElement = document.querySelector(".map");
-  var mapPinsElement = document.querySelector(".map__pins");
-  var mainPinElement = mapElement.querySelector(".map__pin--main");
+  var mapElement = document.querySelector('.map');
+  var mapPinsElement = document.querySelector('.map__pins');
+  var mainPinElement = mapElement.querySelector('.map__pin--main');
 
   var _pins = [];
 
   window.map = {
-    setEnabled: function(enabled) {
+    setEnabled: function (enabled) {
       if (enabled) {
         loadPins();
-        mapElement.classList.remove("map--faded");
+        mapElement.classList.remove('map--faded');
       } else {
-        mapElement.classList.add("map--faded");
+        mapElement.classList.add('map--faded');
       }
 
       isMapActivated = enabled;
     },
-    applyFilters: function(filters) {
+    applyFilters: function (filters) {
       var filteredPins = _pins.slice();
 
       // Фильтр по типу жилья
-      if (filters.housingType !== "any") {
-        filteredPins = filteredPins.filter(function(pin) {
+      if (filters.housingType !== 'any') {
+        filteredPins = filteredPins.filter(function (pin) {
           return pin.offer.type === filters.housingType;
         });
       }
 
       // Фильтр по цене жилья
-      if (filters.housingPrice !== "any") {
-        filteredPins = filteredPins.filter(function(pin) {
+      if (filters.housingPrice !== 'any') {
+        filteredPins = filteredPins.filter(function (pin) {
           var price = pin.offer.price;
 
           switch (filters.housingPrice) {
-            case "middle":
+            case 'middle':
               return price >= 10000 && price <= 50000;
-            case "low":
+            case 'low':
               return price < 10000;
-            case "high":
+            case 'high':
               return price > 50000;
+            default:
+              return false;
           }
         });
       }
 
       // Фильтр по количеству комнат
-      if (filters.housingRooms !== "any") {
-        filteredPins = filteredPins.filter(function(pin) {
+      if (filters.housingRooms !== 'any') {
+        filteredPins = filteredPins.filter(function (pin) {
           return pin.offer.rooms === filters.housingRooms;
         });
       }
 
       // Фильтр по количеству гостей
-      if (filters.housingGuests !== "any") {
-        filteredPins = filteredPins.filter(function(pin) {
+      if (filters.housingGuests !== 'any') {
+        filteredPins = filteredPins.filter(function (pin) {
           return pin.offer.guests === filters.housingGuests;
         });
       }
 
       // Фильтр по фичам
-      Object.keys(filters.housingFeatures).forEach(function(key) {
+      Object.keys(filters.housingFeatures).forEach(function (key) {
         if (filters.housingFeatures[key]) {
-          filteredPins = filteredPins.filter(function(pin) {
+          filteredPins = filteredPins.filter(function (pin) {
             return pin.offer.features.includes(key);
           });
         }
@@ -77,25 +79,27 @@
     }
   };
 
-  var loadPins = function() {
-    var onSuccess = function(pins) {
+  var loadPins = function () {
+    var onSuccess = function (pins) {
       _pins = pins;
+
+      window.card.show(pins[0]);
 
       var filters = window.filter.get();
       window.map.applyFilters(filters);
     };
 
-    var onError = function() {
-      window.xhr.showErrorMessage("Не удалось загрузить объявления", loadPins);
+    var onError = function () {
+      window.xhr.showErrorMessage('Не удалось загрузить объявления', loadPins);
     };
 
     window.pin.loadPins(onSuccess, onError);
   };
 
   // Удаляет метки с карты
-  var clearMapPins = function() {
-    var pinElements = mapPinsElement.querySelectorAll(".map__pin");
-    pinElements.forEach(function(pinElement) {
+  var clearMapPins = function () {
+    var pinElements = mapPinsElement.querySelectorAll('.map__pin');
+    pinElements.forEach(function (pinElement) {
       if (pinElement !== mainPinElement) {
         mapPinsElement.removeChild(pinElement);
       }
@@ -103,10 +107,10 @@
   };
 
   // Генерирует и добавляет метки на карту
-  var addMapPins = function(filteredPins) {
+  var addMapPins = function (filteredPins) {
     var fragment = document.createDocumentFragment();
 
-    filteredPins.forEach(function(pin) {
+    filteredPins.forEach(function (pin) {
       var pinElement = window.pin.createMapPinNode(pin);
       fragment.appendChild(pinElement);
     });
@@ -114,14 +118,14 @@
     mapPinsElement.appendChild(fragment);
   };
 
-  var updateMainPinAddress = function() {
+  var updateMainPinAddress = function () {
     var x = parseInt(mainPinElement.style.left, window.data.DEC_RADIX);
     var y = parseInt(mainPinElement.style.top, window.data.DEC_RADIX);
 
-    window.form.setInputValue("address", x + ", " + y);
+    window.form.setInputValue('address', x + ', ' + y);
   };
 
-  var mainPinMouseDownHandler = function(mouseDownEvent) {
+  var mainPinMouseDownHandler = function (mouseDownEvent) {
     mouseDownEvent.preventDefault();
 
     if (!isMapActivated) {
@@ -134,7 +138,7 @@
       y: mouseDownEvent.clientY
     };
 
-    var mainPinMouseMoveHandler = function(mouseMoveEvent) {
+    var mainPinMouseMoveHandler = function (mouseMoveEvent) {
       var shift = {
         x: coords.x - mouseMoveEvent.clientX,
         y: coords.y - mouseMoveEvent.clientY
@@ -161,20 +165,20 @@
         y: mouseMoveEvent.clientY
       };
 
-      mainPinElement.style.left = mainPinElement.offsetLeft - shift.x + "px";
-      mainPinElement.style.top = mainPinElement.offsetTop - shift.y + "px";
+      mainPinElement.style.left = mainPinElement.offsetLeft - shift.x + 'px';
+      mainPinElement.style.top = mainPinElement.offsetTop - shift.y + 'px';
 
       updateMainPinAddress();
     };
 
-    var mainPinMouseUpHandler = function() {
-      document.removeEventListener("mousemove", mainPinMouseMoveHandler);
-      document.addEventListener("mouseup", mainPinMouseUpHandler);
+    var mainPinMouseUpHandler = function () {
+      document.removeEventListener('mousemove', mainPinMouseMoveHandler);
+      document.addEventListener('mouseup', mainPinMouseUpHandler);
     };
 
-    document.addEventListener("mousemove", mainPinMouseMoveHandler);
-    document.addEventListener("mouseup", mainPinMouseUpHandler);
+    document.addEventListener('mousemove', mainPinMouseMoveHandler);
+    document.addEventListener('mouseup', mainPinMouseUpHandler);
   };
 
-  mainPinElement.addEventListener("mousedown", mainPinMouseDownHandler);
+  mainPinElement.addEventListener('mousedown', mainPinMouseDownHandler);
 })();
