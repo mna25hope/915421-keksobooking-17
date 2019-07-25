@@ -7,13 +7,6 @@
   var mapPinsElement = document.querySelector(".map__pins");
   var mainPinElement = mapElement.querySelector(".map__pin--main");
 
-  var filters = {
-    housingType: "any",
-    housingPrice: "any",
-    housingRooms: "any",
-    housingGuests: "any"
-  };
-
   var _pins = [];
 
   window.map = {
@@ -26,9 +19,6 @@
       }
 
       isMapActivated = enabled;
-    },
-    getFilters: function() {
-      return filters;
     },
     applyFilters: function(filters) {
       var filteredPins = _pins.slice();
@@ -70,6 +60,15 @@
         });
       }
 
+      // Фильтр по фичам
+      Object.keys(filters.housingFeatures).forEach(function(key) {
+        if (filters.housingFeatures[key]) {
+          filteredPins = filteredPins.filter(function(pin) {
+            return pin.offer.features.includes(key);
+          });
+        }
+      });
+
       // Ограничиваем количество меток
       filteredPins = filteredPins.slice(0, 5);
 
@@ -81,6 +80,8 @@
   var loadPins = function() {
     var onSuccess = function(pins) {
       _pins = pins;
+
+      var filters = window.filter.get();
       window.map.applyFilters(filters);
     };
 
