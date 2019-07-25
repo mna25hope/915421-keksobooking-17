@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-(function () {
+(function() {
   var MinPrices = {
     bungalo: 0,
     flat: 1000,
@@ -8,37 +8,37 @@
     palace: 10000
   };
 
-  var formElement = document.querySelector('.ad-form');
-  var typeSelectElement = formElement.querySelector('select[name=type]');
-  var priceInputElement = formElement.querySelector('input[name=price]');
-  var timeinSelectElement = formElement.querySelector('select[name=timein]');
-  var timeoutSelectElement = formElement.querySelector('select[name=timeout]');
+  var formElement = document.querySelector(".ad-form");
+  var typeSelectElement = formElement.querySelector("select[name=type]");
+  var priceInputElement = formElement.querySelector("input[name=price]");
+  var timeinSelectElement = formElement.querySelector("select[name=timein]");
+  var timeoutSelectElement = formElement.querySelector("select[name=timeout]");
 
   window.form = {
-    setEnabled: function (enabled) {
+    setEnabled: function(enabled) {
       if (enabled) {
-        formElement.classList.remove('ad-form--disabled');
+        formElement.classList.remove("ad-form--disabled");
       } else {
-        formElement.classList.add('ad-form--disabled');
+        formElement.classList.add("ad-form--disabled");
       }
     },
-    setSelectValue: function (name, value) {
-      var select = formElement.querySelector('select[name=' + name + ']');
+    setSelectValue: function(name, value) {
+      var select = formElement.querySelector("select[name=" + name + "]");
       var selectOptions = select.options;
 
-      Object.keys(selectOptions).forEach(function (key) {
+      Object.keys(selectOptions).forEach(function(key) {
         if (selectOptions[key].value === value) {
           selectOptions[key].selected = true;
         }
       });
     },
-    setInputValue: function (name, value) {
-      var input = formElement.querySelector('input[name=' + name + ']');
+    setInputValue: function(name, value) {
+      var input = formElement.querySelector("input[name=" + name + "]");
       input.value = value;
     }
   };
 
-  var typeSelectChangeHandler = function (evt) {
+  var typeSelectChangeHandler = function(evt) {
     var value = evt.target.value;
     var min = MinPrices[value];
 
@@ -46,17 +46,17 @@
     priceInputElement.placeholder = min;
   };
 
-  var timeinSelectChangeHangler = function (evt) {
+  var timeinSelectChangeHangler = function(evt) {
     var value = evt.target.value;
     window.form.setSelectValue(timeoutSelectElement, value);
   };
 
-  var timeoutSelectChangeHanler = function (evt) {
+  var timeoutSelectChangeHanler = function(evt) {
     var value = evt.target.value;
     window.form.setSelectValue(timeinSelectElement, value);
   };
 
-  typeSelectElement.addEventListener('change', typeSelectChangeHandler);
-  timeinSelectElement.addEventListener('change', timeinSelectChangeHangler);
-  timeoutSelectElement.addEventListener('change', timeoutSelectChangeHanler);
+  typeSelectElement.addEventListener("change", typeSelectChangeHandler);
+  timeinSelectElement.addEventListener("change", timeinSelectChangeHangler);
+  timeoutSelectElement.addEventListener("change", timeoutSelectChangeHanler);
 })();
