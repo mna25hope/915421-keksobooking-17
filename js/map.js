@@ -81,6 +81,8 @@
     var onSuccess = function(pins) {
       _pins = pins;
 
+      window.card.show(pins[0]);
+
       var filters = window.filter.get();
       window.map.applyFilters(filters);
     };
