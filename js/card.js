@@ -29,6 +29,8 @@
 
   window.card = {
     show: function (pin) {
+      window.card.hide();
+
       var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
       var cardElement = cardTemplate.cloneNode(true);
 
@@ -75,7 +77,30 @@
 
         photosElement.appendChild(photoElement);
       });
+
+      var closeButtonElement = cardElement.querySelector('.popup__close');
+
+      var closeButtonClickHandler = function () {
+        window.card.hide();
+      };
+
+      var keyDownHandler = function (evt) {
+        if (evt.keyCode === window.data.ESCAPE_KEY_CODE) {
+          document.removeEventListener('keydown', keyDownHandler);
+          window.card.hide();
+        }
+      };
+
+      closeButtonElement.addEventListener('click', closeButtonClickHandler);
+      document.addEventListener('keydown', keyDownHandler);
+
       mapElement.insertBefore(cardElement, mapFiltersContainerElement);
+    },
+    hide: function () {
+      var cardElement = mapElement.querySelector('.map__card');
+      if (cardElement) {
+        mapElement.removeChild(cardElement);
+      }
     }
   };
 })();
