@@ -76,14 +76,28 @@
 
       clearMapPins();
       addMapPins(filteredPins);
+      addPinEventHandlers(filteredPins);
     }
+  };
+
+  var addPinEventHandlers = function (filteredPins) {
+    var mapPinElements = mapPinsElement.querySelectorAll('.map__pin');
+
+    var mapPinClickHandler = function (evt) {
+      var index = evt.currentTarget.dataset.id;
+      window.card.show(filteredPins[index]);
+    };
+
+    mapPinElements.forEach(function (mapPinElement) {
+      if (mapPinElement !== mainPinElement) {
+        mapPinElement.addEventListener('click', mapPinClickHandler);
+      }
+    });
   };
 
   var loadPins = function () {
     var onSuccess = function (pins) {
       _pins = pins;
-
-      window.card.show(pins[0]);
 
       var filters = window.filter.get();
       window.map.applyFilters(filters);
@@ -110,8 +124,9 @@
   var addMapPins = function (filteredPins) {
     var fragment = document.createDocumentFragment();
 
-    filteredPins.forEach(function (pin) {
+    filteredPins.forEach(function (pin, index) {
       var pinElement = window.pin.createMapPinNode(pin);
+      pinElement.dataset.id = index;
       fragment.appendChild(pinElement);
     });
 
