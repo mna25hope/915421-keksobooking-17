@@ -2,13 +2,15 @@
 
 (function () {
   var MinPrices = {
-    bungalo: 0,
-    flat: 1000,
-    house: 5000,
-    palace: 10000
+    BUNGALO: 0,
+    FLAT: 1000,
+    HOUSE: 5000,
+    PALACE: 10000
   };
 
   var formElement = document.querySelector('.ad-form');
+  var avatarInputElement = formElement.querySelector('input[name=avatar]');
+  var avatarPreviewElement = formElement.querySelector('.ad-form-header__preview > img');
   var addressInputElement = formElement.querySelector('input[name=address]');
   var typeSelectElement = formElement.querySelector('select[name=type]');
   var priceInputElement = formElement.querySelector('input[name=price]');
@@ -16,6 +18,9 @@
   var timeoutSelectElement = formElement.querySelector('select[name=timeout]');
   var roomsSelectElement = formElement.querySelector('select[name=rooms]');
   var guestsSelectElement = formElement.querySelector('select[name=capacity]');
+
+  var imagesInputElement = formElement.querySelector('input[name=images]');
+  var photosContainerElement = formElement.querySelector('.ad-form__photo-container');
 
   window.form = {
     reset: function () {
@@ -38,6 +43,8 @@
         featureElement.checked = false;
       });
 
+      typeSelectElement.selectedIndex = 1;
+      priceInputElement.placeholder = MinPrices.FLAT;
       descriptionElement.value = '';
 
       window.card.hide();
@@ -91,9 +98,23 @@
     return true;
   };
 
+  var avatarChangeHandler = function (evt) {
+    var file = evt.target.files[0];
+
+    if (file) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        avatarPreviewElement.src = reader.result;
+      });
+
+      reader.readAsDataURL(file);
+    }
+  };
+
   var typeSelectChangeHandler = function (evt) {
     var value = evt.target.value;
-    var min = MinPrices[value];
+    var min = MinPrices[String(value).toUpperCase()];
 
     priceInputElement.min = min;
     priceInputElement.placeholder = min;
@@ -115,6 +136,26 @@
 
   var guestsSelectChangeHandler = function () {
     validateRoomsAndGuests();
+  };
+
+  var imagesSelectHandler = function (evt) {
+    var files = evt.target.files;
+
+    if (files && files.length) {
+      Object.keys(files).forEach(function (key) {
+        var reader = new FileReader();
+
+        reader.addEventListener('load', function (e) {
+          var imageElement = document.createElement('img');
+          imageElement.classList.add('ad-form__photo');
+          imageElement.src = e.target.result;
+
+          photosContainerElement.appendChild(imageElement);
+        });
+
+        reader.readAsDataURL(files[key]);
+      });
+    }
   };
 
   var sendForm = function () {
@@ -145,11 +186,13 @@
     }
   };
 
+  avatarInputElement.addEventListener('change', avatarChangeHandler);
   typeSelectElement.addEventListener('change', typeSelectChangeHandler);
   timeinSelectElement.addEventListener('change', timeinSelectChangeHangler);
   timeoutSelectElement.addEventListener('change', timeoutSelectChangeHanler);
   roomsSelectElement.addEventListener('change', roomsSelectChangeHandler);
   guestsSelectElement.addEventListener('change', guestsSelectChangeHandler);
+  imagesInputElement.addEventListener('change', imagesSelectHandler);
   formElement.addEventListener('reset', formResetHandler);
   formElement.addEventListener('submit', formSubmitHandler);
 })();
