@@ -9,6 +9,7 @@
   };
 
   var formElement = document.querySelector('.ad-form');
+  var addressInputElement = formElement.querySelector('input[name=address]');
   var typeSelectElement = formElement.querySelector('select[name=type]');
   var priceInputElement = formElement.querySelector('input[name=price]');
   var timeinSelectElement = formElement.querySelector('select[name=timein]');
@@ -17,6 +18,31 @@
   var guestsSelectElement = formElement.querySelector('select[name=capacity]');
 
   window.form = {
+    reset: function () {
+      var inputElements = formElement.querySelectorAll('input');
+      var selectElements = formElement.querySelectorAll('select');
+      var featureElements = formElement.querySelectorAll('input[type=checkbox]');
+      var descriptionElement = formElement.querySelector('textarea');
+
+      inputElements.forEach(function (inputElement) {
+        if (inputElement !== addressInputElement) {
+          inputElement.value = '';
+        }
+      });
+
+      selectElements.forEach(function (selectElement) {
+        selectElement.selectedIndex = 0;
+      });
+
+      featureElements.forEach(function (featureElement) {
+        featureElement.checked = false;
+      });
+
+      descriptionElement.value = '';
+
+      window.card.hide();
+      window.map.setEnabled(false);
+    },
     setEnabled: function (enabled) {
       if (enabled) {
         formElement.classList.remove('ad-form--disabled');
@@ -91,11 +117,31 @@
     validateRoomsAndGuests();
   };
 
+  var sendForm = function () {
+    var formData = new FormData(formElement);
+
+    var onSuccess = function () {
+      window.xhr.showSuccessMessage('Ваше объявление успешно размещено!');
+      window.form.reset();
+    };
+
+    var onError = function () {
+      window.xhr.showErrorMessage('Не удалось разместить объявление', sendForm);
+    };
+
+    window.xhr.post('https://js.dump.academy/keksobooking', formData, onSuccess, onError);
+  };
+
+  var formResetHandler = function (evt) {
+    evt.preventDefault();
+    window.form.reset();
+  };
+
   var formSubmitHandler = function (evt) {
     evt.preventDefault();
 
-    if (!validateRoomsAndGuests()) {
-      return;
+    if (validateRoomsAndGuests()) {
+      sendForm();
     }
   };
 
@@ -104,5 +150,6 @@
   timeoutSelectElement.addEventListener('change', timeoutSelectChangeHanler);
   roomsSelectElement.addEventListener('change', roomsSelectChangeHandler);
   guestsSelectElement.addEventListener('change', guestsSelectChangeHandler);
+  formElement.addEventListener('reset', formResetHandler);
   formElement.addEventListener('submit', formSubmitHandler);
 })();

@@ -7,6 +7,11 @@
   var mapPinsElement = document.querySelector('.map__pins');
   var mainPinElement = mapElement.querySelector('.map__pin--main');
 
+  var initialMainPinCoords = {
+    x: mainPinElement.style.left,
+    y: mainPinElement.style.top
+  };
+
   var _pins = [];
 
   window.map = {
@@ -15,6 +20,8 @@
         loadPins();
         mapElement.classList.remove('map--faded');
       } else {
+        clearMapPins();
+        resetMainPin();
         mapElement.classList.add('map--faded');
       }
 
@@ -120,6 +127,13 @@
     });
   };
 
+  var resetMainPin = function () {
+    mainPinElement.style.left = initialMainPinCoords.x;
+    mainPinElement.style.top = initialMainPinCoords.y;
+
+    updateMainPinAddress();
+  };
+
   // Генерирует и добавляет метки на карту
   var addMapPins = function (filteredPins) {
     var fragment = document.createDocumentFragment();
@@ -188,7 +202,7 @@
 
     var mainPinMouseUpHandler = function () {
       document.removeEventListener('mousemove', mainPinMouseMoveHandler);
-      document.addEventListener('mouseup', mainPinMouseUpHandler);
+      document.removeEventListener('mouseup', mainPinMouseUpHandler);
     };
 
     document.addEventListener('mousemove', mainPinMouseMoveHandler);
